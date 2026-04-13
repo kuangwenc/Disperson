@@ -84,7 +84,7 @@ if raw_data is not None:
     
     ax_one.set_xlabel("i")
     ax_one.set_ylabel("log2(std)")
-    ax_one.set_title("Date with linear fits")
+    ax_one.set_title("Data with linear fits")
     ax_one.legend()
     plt.tight_layout()
     st.pyplot(fig_one)
