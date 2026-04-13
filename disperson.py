@@ -80,7 +80,7 @@ if raw_data is not None:
         y = df_log2_df[col].values.astype(float)
         slope, intercept = np.polyfit(x, y, 1)
         y_fit = slope * x + intercept
-        ax_one.plot(x, y_fit, '-', label=f'Column {col}: slope={slope:.3f}')
+        ax_one.plot(x, y_fit, '-', label=f'Column {col}: slope={slope:.3f}, FD={1-slope:.3f}')
     
     ax_one.set_xlabel("i")
     ax_one.set_ylabel("log2(std)")
