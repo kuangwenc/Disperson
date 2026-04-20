@@ -25,7 +25,7 @@ p_isi = st.sidebar.number_input("ISI (ms)", value=200)
 p_stim = st.sidebar.number_input("Stimulus (ms)", value=972)
 p_timeout = st.sidebar.number_input("Timeout Threshold (ms)", value=976)
 
-st.sidebar.header("2. MATLAB-style Censoring")
+st.sidebar.header("2. Censoring")
 # 第一步：绝对值截断
 lo_val = st.sidebar.number_input("Min Value (Absolute)", value=0.0)
 hi_val = st.sidebar.number_input("Max Value (Absolute)", value=2000.0)
@@ -81,7 +81,7 @@ if raw_data is not None:
 
         df_final = pd.DataFrame(processed_cols)
         st.success(f"Preprocessing Complete. Final shape: {df_final.shape}")
-        st.dataframe(df_final.head())
+        
 
         # --- 离散度分析 (Dispersion Analysis) ---
         st.subheader("Dispersion Analysis & Fractal Dimension")
