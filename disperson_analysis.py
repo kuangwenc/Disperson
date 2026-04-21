@@ -19,16 +19,12 @@ def normalize_series(data):
 
 st.title('Dispersion Analysis (Advanced Preprocessing)')
 
-# --- 侧边栏：实验参数与过滤设置 ---
-st.sidebar.header("1. Experimental Constraints")
-p_isi = st.sidebar.number_input("ISI (ms)", value=200)
-p_stim = st.sidebar.number_input("Stimulus (ms)", value=972)
-p_timeout = st.sidebar.number_input("Timeout Threshold (ms)", value=976)
 
-st.sidebar.header("2. Censoring")
+
+st.sidebar.header("1. Censoring")
 # 第一步：绝对值截断
-lo_val = st.sidebar.number_input("Min Value (Absolute)", value=0.0)
-hi_val = st.sidebar.number_input("Max Value (Absolute)", value=2000.0)
+lo_val = st.sidebar.number_input("Min Value (ms)", value=200.0)
+hi_val = st.sidebar.number_input("Max Value (ms)", value=1500.0)
 
 # 第二步：标准差去噪
 sd_threshold = st.sidebar.slider("SD Threshold (n * sigma)", 1.0, 5.0, 3.0)
@@ -53,8 +49,6 @@ if raw_data is not None:
         for col in df_raw.columns:
             series = df_raw[col].dropna().values
             
-            # --- 逻辑过滤 1: 实验超时过滤 ---
-            series = series[series <= p_timeout]
             
             # --- 逻辑过滤 2: 绝对值截断 (Absolute Censoring) ---
             series = series[(series >= lo_val) & (series <= hi_val)]
@@ -102,12 +96,14 @@ if raw_data is not None:
             y_log = np.log2(np.array(stds) + 1e-10) # 防止log(0)
             
             # 线性拟合
-            slope, intercept = np.polyfit(x_plot, y_log, 1)
+            slope, intercept = np.polyfit(x_plot[0:6], y_log[0:6], 1)
+            y_fit = slope * x_plot + intercept
             results.append({"Column": col, "Slope": slope, "FD": 1 - slope})
             
             # 绘图
             fig, ax = plt.subplots(figsize=(6, 3))
-            ax.plot(x_plot, y_log, 'o-', label=f"FD={1-slope:.3f}")
+            ax.plot(x_plot, y_log, 'o', label='data')
+            ax.plot(x_plot, y_fit, '-', label=f"FD={1-slope:.3f}")
             ax.set_title(f"Analysis for {col}")
             ax.set_xlabel("Log2(Scale)")
             ax.set_ylabel("Log2(Std)")
